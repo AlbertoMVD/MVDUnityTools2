@@ -6,15 +6,21 @@ using UnityEditor;
 [CustomEditor(typeof(Projectile))]
 public class ProjectileEditor : Editor
 {
-    // Start is called before the first frame update
-    void Start()
+    [DrawGizmo(GizmoType.Selected)]
+    static void DrawGizmosSelected(Projectile projectile, GizmoType gizmoType)
     {
-        
+        //Gizmos.DrawWireSphere(projectile.transform.position, projectile.damageRadius);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnSceneGUI()
     {
-        
+        // We are getting the projectile damage radius
+        // We are updating the radius with the handle changes
+        // We are updating the collider radius with the new value
+        Projectile bullet = (Projectile)target;
+        bullet.damageRadius = Handles.RadiusHandle(bullet.transform.rotation, bullet.transform.position, bullet.damageRadius);
+        bullet.GetComponent<SphereCollider>().radius = bullet.damageRadius;
+
+        // Get the prefab and update the values
     }
 }

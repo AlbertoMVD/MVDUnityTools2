@@ -596,16 +596,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firingRange: 5
-  rotationSpeed: 2
-  velocity: 1
+  barrelRotationSpeed: 1
+  velocity: 10
   projectile: {fileID: 1852430023000171083, guid: c0b0a03afd89300489935554a2117331,
     type: 3}
-  baseRotation: {fileID: 1848905725387459435}
   target: {fileID: 0}
+  baseRotation: {fileID: 1848905725387459435}
   gunBody: {fileID: 1853047498131298343}
-  gunBarrel: {fileID: 1852766800778345967}
-  muzzleFlash: {fileID: 1974678494930495633}
-  canFire: 0
+  barrel: {fileID: 1852766800778345967}
+  muzzelFlash: {fileID: 1974678494930495633}
+  offset: {x: -0.01087224, y: 0.38451988, z: 1.589719}
 --- !u!1 &1847044500662034389
 GameObject:
   m_ObjectHideFlags: 0
