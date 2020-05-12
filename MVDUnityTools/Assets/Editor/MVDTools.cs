@@ -5,6 +5,17 @@ using UnityEngine;
 
 public class MVDTools : EditorWindow
 {
+    public struct PlacementSettings
+    {
+        public bool active;
+
+        // Filter by tag
+        // Filter by layer
+        // Add some additional transform information
+        // Physics
+        // Attach to parent
+    }
+
     // Editor version
     public static string version = "0.1a";
 
@@ -21,7 +32,9 @@ public class MVDTools : EditorWindow
     private string prefabsPath = "Assets/3DGamekitLite/Art/Models/Characters";
     private List<string> instances;
 
-    private bool[] foldout = new bool[] { false, false, true };
+    static private MVDToolsBrowser prefabBrowser;
+    static private bool[] foldout = new bool[] { false, false, true };
+    static private string[] searchPath = new string[] { "Assets" };
 
     // Init function, we create the window and initialize settings
     [MenuItem("MVD/MVD Tools Panel")]
@@ -40,12 +53,20 @@ public class MVDTools : EditorWindow
     [UnityEditor.Callbacks.DidReloadScripts]
     static void UpdateResources()
     {
+        prefabBrowser = new MVDToolsBrowser();
+        prefabBrowser.eventFilter.AddListener(GenerateSearch);
+        prefabBrowser.eventRefresh.AddListener(GenerateSearch);
+        GenerateSearch();
+
         texture_logo = Resources.Load("logo_lasalle") as Texture2D;
     }
 
     // Method used to draw anything on our window screen.
     void OnGUI()
     {
+        // OnGUI displays UI elements on editor window refresh (Editor window refresh when needed)
+
+        DisplayStyles();
         {
             GUILayout.BeginHorizontal();
             {
@@ -103,7 +124,17 @@ public class MVDTools : EditorWindow
     // Method used to display the prefab placement tools.
     private void DisplayPrefabSpawner()
     {
+        prefabBrowser.Display();
 
+        if(GUILayout.Button("Place"))
+        {
+
+        }
+    }
+
+    static void DisplayStyles()
+    {
+        prefabBrowser.LoadStyles();
     }
 
     // Display a separator line as needed.
@@ -142,6 +173,31 @@ public class MVDTools : EditorWindow
     }
 
     // Functions to execute functionality
+
+    private static void GenerateSearch(string filterName="")
+    {
+        List<AssetInfo> assetList = new List<AssetInfo>();
+
+        // Find assets at the given path
+        string[] guids = AssetDatabase.FindAssets("t:prefab", searchPath);
+
+        foreach(string guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object));
+            Texture2D preview = AssetPreview.GetAssetPreview(asset) ?? AssetPreview.GetMiniThumbnail(asset);
+
+            if (filterName != string.Empty && !asset.name.Contains(filterName))
+                continue;
+
+            AssetInfo assetInfo = new AssetInfo(guid, assetPath);
+            assetInfo.preview = preview;
+            assetInfo.Name = asset.name;
+            assetList.Add(assetInfo);
+        }
+
+        prefabBrowser.FillBrowser(assetList.ToArray());
+    }
 
     // Get all the prefabs from the folder
     void RetrievePrefabs(string path)
