@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class MVDTools : EditorWindow
 {
+    // Editor version
+    public static string version = "0.1a";
+
+    // Display textures
+    public static Texture2D texture_logo;
+
+    // Predefined sizes
+    public Vector2 tx_logo_size = new Vector2(200, 75);
+
     private int width = 8;
     private float offset = 8f;
     private Vector2 gridSize;
@@ -15,19 +24,48 @@ public class MVDTools : EditorWindow
     private bool[] foldout = new bool[] { false, false, true };
 
     // Init function, we create the window and initialize settings
-    [MenuItem("MVD/Prefab Loader")]
+    [MenuItem("MVD/MVD Tools Panel")]
     static void Init()
     {
         // Get existing open window or if none, make a new one:
         MVDTools window = (MVDTools)EditorWindow.GetWindow(typeof(MVDTools));
         window.Show();
+
+        UpdateResources();
     }
 
     /* Editor UI METHODS */
 
+    // Reloading resources method
+    [UnityEditor.Callbacks.DidReloadScripts]
+    static void UpdateResources()
+    {
+        texture_logo = Resources.Load("logo_lasalle") as Texture2D;
+    }
+
     // Method used to draw anything on our window screen.
     void OnGUI()
     {
+        {
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.FlexibleSpace();
+                GUI.DrawTexture(new Rect(Screen.width * .5f - tx_logo_size.x * .5f, 15, tx_logo_size.x, tx_logo_size.y), texture_logo, ScaleMode.StretchToFill, true);
+                GUILayout.FlexibleSpace();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(tx_logo_size.y + 10f);
+            DisplaySeparator(50);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Tools Version: " + version, EditorStyles.boldLabel);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.Space(10);
+        }
+
         DisplayPanel("Utilities", () => DisplayUtilities(), ref foldout[0]);
         DisplayPanel("Prefab Loader", () => DisplayPrefabLoader(), ref foldout[1]);
         DisplayPanel("Prefab Spawner", () => DisplayPrefabSpawner(), ref foldout[2]);
@@ -68,6 +106,20 @@ public class MVDTools : EditorWindow
 
     }
 
+    // Display a separator line as needed.
+    static void DisplaySeparator(int width)
+    {
+        string line = string.Empty;
+        for (int i = 0; i < width; i++) line += "_";
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.LabelField(line);
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+    }
+
+    // Display a foldout inside a vertical box.
     static void DisplayPanel(string title, System.Action toexecute, ref bool foldout)
     {
         //GUI.color = color;
