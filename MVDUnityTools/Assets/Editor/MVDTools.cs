@@ -35,6 +35,9 @@ public class MVDTools : EditorWindow
     static private MVDToolsBrowser prefabBrowser;
     static private bool[] foldout = new bool[] { false, false, true };
     static private string[] searchPath = new string[] { "Assets" };
+    static private PlacementSettings placementSettings;
+
+    static private GameObject dummyObject;
 
     // Init function, we create the window and initialize settings
     [MenuItem("MVD/MVD Tools Panel")]
@@ -126,9 +129,14 @@ public class MVDTools : EditorWindow
     {
         prefabBrowser.Display();
 
+        // TO-DO
+        // Add UI to modify transform settings
+        // Add UI to modify tag and layer settings
+
         if(GUILayout.Button("Place"))
         {
-
+            placementSettings.active = !placementSettings.active;
+            UpdatePlacementTool();
         }
     }
 
@@ -197,6 +205,37 @@ public class MVDTools : EditorWindow
         }
 
         prefabBrowser.FillBrowser(assetList.ToArray());
+    }
+
+    private void CreatePlacementTool()
+    {
+        Selection.activeObject = null;
+        GameObject obj = prefabBrowser.SelectedPrefab; // This method gives me the selected prefab from the window.
+
+        dummyObject = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+        dummyObject.hideFlags = HideFlags.HideInHierarchy;
+        dummyObject.AddComponent<ClickSpawn>();
+        ClickSpawn clickSpawn = dummyObject.GetComponent<ClickSpawn>();
+        clickSpawn.prefab = obj;
+
+        // TO-DO
+        // Add parameters to configure the clickspawn component
+        // Additional transform settings 
+
+        //clickSpawn.layerIndex = 2;
+        dummyObject.name = "MVDT_DummyObject";
+
+        MVDUtils.RecursiveSetLayer(dummyObject.transform, 2);
+        MVDUtils.ChangeAllMaterials(dummyObject, Resources.Load("mtl_debug_placement") as Material);
+    }
+
+    private void UpdatePlacementTool()
+    {
+        Object.DestroyImmediate(dummyObject);
+        if (placementSettings.active)
+        {
+            CreatePlacementTool();
+        }
     }
 
     // Get all the prefabs from the folder
