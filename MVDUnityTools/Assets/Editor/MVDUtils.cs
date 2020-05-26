@@ -7,6 +7,7 @@ using UnityInternalEditor = UnityEditorInternal.InternalEditorUtility;
 
 public class MVDUtils
 {
+    // All unity layers
     public static string[] RetrieveLayers()
     {
         List<string> layer_list = new List<string>();

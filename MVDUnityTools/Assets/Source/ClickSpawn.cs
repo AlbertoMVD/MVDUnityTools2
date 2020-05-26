@@ -49,6 +49,12 @@ public class ClickSpawn : MonoBehaviour
     // Do all the raycasting and necessary tests to place objects.
     void OnScene(SceneView scene)
     {
+        // TO-DO
+        // Get the info from the MVDTools window
+        // Set the layer that was given by the UI
+        // Set the parent that was given by the UI
+
+        // Set the transform settings
         SceneView.lastActiveSceneView.Repaint();
 
         // Get the mouse coordinates from the screen
@@ -81,6 +87,7 @@ public class ClickSpawn : MonoBehaviour
             transform.position = point;
             transform.rotation = new_rotation;
             //transform.localScale = 
+            //transform.SetParent()
 
             HandlePlacement(Event.current, normal);
         }

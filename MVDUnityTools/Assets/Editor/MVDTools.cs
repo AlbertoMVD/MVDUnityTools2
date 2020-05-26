@@ -37,6 +37,10 @@ public class MVDTools : EditorWindow
     static private string[] searchPath = new string[] { "Assets" };
     static private PlacementSettings placementSettings;
 
+    static Vector3 tmp_position = new Vector3();
+    static Vector3 tmp_rotation = new Vector3();
+    static Vector3 tmp_scale = new Vector3();
+
     static private GameObject dummyObject;
 
     // Init function, we create the window and initialize settings
@@ -127,6 +131,16 @@ public class MVDTools : EditorWindow
     // Method used to display the prefab placement tools.
     private void DisplayPrefabSpawner()
     {
+        /* DO YOUR CODING HERE FOR UI */
+
+        //Display a dropdown list with all layers, and get the selected one.
+
+        // AssetObject to attach to parent
+
+        // Build the necessary UI to display the transform settings
+        EditorGUILayout.Vector3Field("Position", tmp_position);
+        EditorGUILayout.Vector3Field("Rotation", tmp_rotation);
+        EditorGUILayout.Vector3Field("Scale", tmp_scale);
         prefabBrowser.Display();
 
         // TO-DO
@@ -213,7 +227,7 @@ public class MVDTools : EditorWindow
         GameObject obj = prefabBrowser.SelectedPrefab; // This method gives me the selected prefab from the window.
 
         dummyObject = PrefabUtility.InstantiatePrefab(obj) as GameObject;
-        dummyObject.hideFlags = HideFlags.HideInHierarchy;
+        //dummyObject.hideFlags = HideFlags.HideInHierarchy;
         dummyObject.AddComponent<ClickSpawn>();
         ClickSpawn clickSpawn = dummyObject.GetComponent<ClickSpawn>();
         clickSpawn.prefab = obj;
